@@ -1,5 +1,5 @@
 .magazine {
-  margin: 0 auto;
+  margin: 0 auto !important;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -12,7 +12,16 @@
   height: 100%;
 }
 
+.page-wrapper {
+  border: 1px solid black;
+}
+
 .magazine .page img {
   max-width: 100%;
   height: 100%;
+}
+
+.magHolder {
+  display: flex;
+  justify-content: center;
 }
