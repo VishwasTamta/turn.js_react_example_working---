@@ -31,30 +31,50 @@ const options = {
 
 function App() {
   const [pages, setPages] = useState([]);
+  const [pdf, setPdf] = useState(null);
 
   useEffect(() => {
     const getImages = async () => {
-      const response = await fetch('http://localhost:3000/getPDF', {
-        method: 'GET'
+      const response = await fetch(`http://localhost:3000/getPDF/${pdf.name}`, {
+        method: 'GET',
       })
       const data = await response.json()
       setPages(data.images)
     }
     getImages()
-  }, [])
+  }, [pdf])
 
-  return (<>{pages.length > 0 &&
-    <div className="magHolder">
-      <Turn options={options} className="magazine">
-        {pages?.map((page, index) => {
-          return <div key={index} className="page">
-            <img src={'http://localhost:3000/output/pdf.pdf/' + page} alt="" />
-          </div>
-        })}
-      </Turn>
-    </div>
+  const handleUploadClick = async () => {
+    const formData = new FormData();
+    formData.append('file', pdf);
+    const response = await fetch('http://localhost:3000/upload', {
+      method: 'POST',
+      body: formData,
+    })
+    console.log(response)
+    if (response.status === 200) {
+      alert("PDF uploaded Success!");
+    }
   }
-  </>
+
+  return (
+    <div style={{ height: '100vh' }}>
+      <div>
+        <input type="file" onChange={(e) => setPdf(e.target.files[0])} />
+        <button onClick={handleUploadClick}>Upload</button>
+      </div>
+      {pages.length > 0 &&
+        <div className="magHolder">
+          <Turn options={options} className="magazine">
+            {pages?.map((page, index) => {
+              return <div key={index} className="page">
+                <img src={`http://localhost:3000/output/${pdf?.name}/` + page} alt="" />
+              </div>
+            })}
+          </Turn>
+        </div>
+      }
+    </div>
   );
 }
 
